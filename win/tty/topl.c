@@ -10,6 +10,9 @@
 #include "wintty.h"
 #include <ctype.h>
 
+#include "hook.h"
+#define putchar(x) h_putchar(x)
+
 #ifndef C	/* this matches src/cmd.c */
 #define C(c)	(0x1f & (c))
 #endif

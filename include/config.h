@@ -141,19 +141,6 @@
  *		playground.
  */
 
-#ifndef WIZARD		/* allow for compile-time or Makefile changes */
-# ifndef KR1ED
-#  define WIZARD  "wizard" /* the person allowed to use the -D option */
-# else
-#  define WIZARD
-#  define WIZARD_NAME "wizard"
-# endif
-#endif
-
-#define LOGFILE "logfile"	/* larger file for debugging purposes */
-#define NEWS "news"		/* the file containing the latest hack news */
-#define PANICLOG "paniclog"	/* log of panic and impossible events */
-
 /*
  *	If COMPRESS is defined, it should contain the full path name of your
  *	'compress' program.  Defining INTERNAL_COMP causes NetHack to do
@@ -167,14 +154,6 @@
  *	compression.
  */
 
-#ifdef UNIX
-/* path and file name extension for compression program */
-#define COMPRESS "/usr/bin/compress"	/* Lempel-Ziv compression */
-#define COMPRESS_EXTENSION ".Z"		/* compress's extension */
-/* An example of one alternative you might want to use: */
-/* #define COMPRESS "/usr/local/bin/gzip" */	/* FSF gzip compression */
-/* #define COMPRESS_EXTENSION ".gz" */		/* normal gzip extension */
-#endif
 
 #ifndef COMPRESS
 # define INTERNAL_COMP	/* control use of NetHack's compression routines */
@@ -203,9 +182,7 @@
  * If you define HACKDIR, then this will be the default playground;
  * otherwise it will be the current directory.
  */
-# ifndef HACKDIR
-#  define HACKDIR "/usr/games/lib/nethackdir"
-# endif
+
 
 /*
  * Some system administrators are stupid enough to make Hack suid root

@@ -37,7 +37,7 @@
 #define NETWORK		/* if running on a networked system */
 			/* e.g. Suns sharing a playground through NFS */
 /* #define SUNOS4 */	/* SunOS 4.x */
-/* #define LINUX */	/* Another Unix clone */
+#define LINUX 	/* Another Unix clone */
 /* #define CYGWIN32 */	/* Unix on Win32 -- use with case sensitive defines */
 /* #define GENIX */	/* Yet Another Unix Clone */
 /* #define HISX */	/* Bull Unix for XPS Machines */
@@ -53,7 +53,7 @@
 			 * particular, it should NOT be defined for the UNIXPC
 			 * unless you remove the use of the shared library in
 			 * the Makefile */
-#define TEXTCOLOR	/* Use System V r3.2 terminfo color support */
+/* #define TEXTCOLOR*/	/* Use System V r3.2 terminfo color support */
 			/* and/or ANSI color support on termcap systems */
 			/* and/or X11 color */
 #define POSIX_JOB_CONTROL /* use System V / Solaris 2.x / POSIX job control */
@@ -102,8 +102,6 @@
  * If you want the static parts of your playground on a read-only file
  * system, define VAR_PLAYGROUND to be where the variable parts are kept.
  */
-/* #define VAR_PLAYGROUND "/var/lib/games/nethack" */
-
 
 /*
  * Define DEF_PAGER as your default pager, e.g. "/bin/cat" or "/usr/ucb/more"
@@ -143,7 +141,6 @@
  * A stat system call is done on the mailbox every MAILCKFREQ moves.
  */
 
-#define MAIL			/* Deliver mail during the game */
 
 /* The Andrew Message System does mail a little differently from normal
  * UNIX.  Mail is deposited in the user's own directory in ~/Mailbox

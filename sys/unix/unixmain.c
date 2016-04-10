@@ -6,7 +6,9 @@
 
 #include "hack.h"
 #include "dlb.h"
+#include "hook.h"
 
+#include <getopt.h>
 #include <sys/stat.h>
 #include <signal.h>
 #include <pwd.h>
@@ -45,7 +47,7 @@ static boolean wiz_error_flag = FALSE;
 #endif
 
 int
-main(argc,argv)
+main1(argc,argv)
 int argc;
 char *argv[];
 {
@@ -289,6 +291,95 @@ not_recovered:
 	return(0);
 }
 
+int
+main(argc,argv)
+int argc;
+char *argv[];
+{
+	const char * 	fake_argv[2] = {"nethack", NULL};
+	struct stat 	s;
+	FILE * 			fd;
+	int				mode_set = 0;
+
+	/* The current directory should be "hackdir" - check for that */
+	if ((stat ("Arc-fila.lev", &s) == 0)
+	&& (stat ("air.lev", &s) == 0)
+	&& (stat ("data", &s) == 0)
+	&& (stat ("oracles", &s) == 0)) {
+		/* ok */
+	} else {
+		fputs ("Please run Headless Nethack from the 'hackdir' directory.\n", stderr);
+		return 1;
+	}
+
+	/* Remove temporary and bones files */
+	system ("rm -f perm record 1234magic* bon*");
+
+	/* Recreate lock file */
+	fd = fopen ("perm", "wt");
+	if (!fd) {
+		perror ("Unable to create 'perm' file");
+		return 1;
+	}
+	fclose (fd);
+
+	/* Init recording */
+	while (1) {
+		int option_index = 0;
+
+		static const char * e1 = "Specify exactly one of --record, --play, or --play-quiet\n";
+		static struct option long_options[] = {
+			{"record",		required_argument, 	0, 'r'},
+			{"play",		required_argument, 	0, 'p'},
+			{"play-quiet",	required_argument,	0, 'q'},
+			{0,				0,					0, 0},
+		};
+		int c = getopt_long (argc, argv, "r:p:s", long_options, &option_index);
+		if (c == -1) {
+			break;
+		}
+		switch (c) {
+			case 'r':
+				if (mode_set) {
+					goto help;
+				}
+				mode_set = 1;
+				h_init (optarg, 1, 1);
+				break;
+			case 'p':
+				if (mode_set) {
+					goto help;
+				}
+				mode_set = 1;
+				h_init (optarg, 0, 1);
+				break;
+			case 'q':
+				if (mode_set) {
+					goto help;
+				}
+				mode_set = 1;
+				h_init (optarg, 0, 0);
+                printf ("Playing '%s' in quiet mode...\n", optarg);
+				break;
+			default:
+				goto help;
+		}
+	}
+	if (!mode_set) {
+		goto help;
+	}
+
+	/* Launch */
+	return main1 (1, fake_argv);
+
+help:
+	fputs ("Usage: one of\n"
+		" hnethack --record <file name>\n"
+		" hnethack --play <file name>\n"
+		" hnethack --play-quiet <file name>\n", stderr);
+	exit (1);
+}
+
 static void
 process_options(argc, argv)
 int argc;
@@ -304,8 +395,8 @@ char *argv[];
 		argv++;
 		argc--;
 		switch(argv[0][1]){
-		case 'D':
 #ifdef WIZARD
+		case 'D':
 			{
 			  char *user;
 			  int uid;

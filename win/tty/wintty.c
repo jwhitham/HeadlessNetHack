@@ -16,6 +16,9 @@
 #include "patchlevel.h"
 #endif
 
+#include "hook.h"
+#define putchar(x) h_putchar(x)
+
 #ifdef TTY_GRAPHICS
 
 #ifdef MAC
