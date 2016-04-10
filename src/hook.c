@@ -32,6 +32,22 @@ time_t time (time_t *__timer)
     return 1234;
 }
 
+struct tm *h_localtime(const time_t *timep)
+{
+    static struct tm current_time;
+
+    current_time.tm_sec = 1234 % 60;
+    current_time.tm_min = 1234 / 60;
+    current_time.tm_hour = 23;
+    current_time.tm_year = 1969;
+    current_time.tm_wday = 3; /* 31st Dec 1969 was a Wednesday */
+    current_time.tm_mon = 12;
+    current_time.tm_mday = 31;
+    current_time.tm_yday = 365;
+    current_time.tm_isdst = 0;
+    return &current_time;
+}
+
 unsigned int sleep (unsigned int __seconds)
 {
     return 0;
@@ -258,14 +274,14 @@ void h_init (const char * log_name, int do_recording, int enable_putchar)
 
     if (h_state != unknown) {
         fprintf (stderr, "h_init outside of unknown state (called twice?)\n");
-		exit (1);
+        exit (1);
     }
 
-	if (do_recording) {
+    if (do_recording) {
         h_state = recording;
         h_log = fopen (log_name, "wt");
         if (h_log == NULL) {
-			perror ("unable to create recording file");
+            perror ("unable to create recording file");
             exit (1);
         }
 
@@ -281,14 +297,14 @@ void h_init (const char * log_name, int do_recording, int enable_putchar)
         }
         h_enable_putchar = 1;
     } else {
-		h_log = fopen (log_name, "rt");
-		if (h_log == NULL) {
-			perror ("unable to open playback file");
-		}
+        h_log = fopen (log_name, "rt");
+        if (h_log == NULL) {
+            perror ("unable to open playback file");
+        }
         h_state = playback;
         h_enable_putchar = enable_putchar;
     }
-	h_insist (h_header, h_version);
+    h_insist (h_header, h_version);
 }
 
 static void h_insist (const char * tag, int value)

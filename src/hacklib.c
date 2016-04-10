@@ -5,6 +5,7 @@
 
 /* We could include only config.h, except for the overlay definitions... */
 #include "hack.h"
+#include "hook.h"
 /*=
     Assorted 'small' utility routines.	They're virtually independent of
 NetHack, except that rounddiv may call panic().
@@ -498,7 +499,7 @@ getlt()
 #if (defined(ULTRIX) && !(defined(ULTRIX_PROTO) || defined(NHSTDC))) || (defined(BSD) && !defined(POSIX_TYPES))
 	return(localtime((long *)(&date)));
 #else
-	return(localtime(&date));
+	return(h_localtime(&date));
 #endif
 }
 
@@ -545,7 +546,7 @@ time_t date;
 #if (defined(ULTRIX) && !(defined(ULTRIX_PROTO) || defined(NHSTDC))) || (defined(BSD) && !defined(POSIX_TYPES))
 		lt = localtime((long *)(&date));
 #else
-		lt = localtime(&date);
+		lt = h_localtime(&date);
 #endif
 
 	/* just in case somebody's localtime supplies (year % 100)
